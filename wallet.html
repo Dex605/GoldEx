@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoldEx — Wallet</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#F0B429;--gold-dim:#8a6a00;--gold-light:#FFD97D;--bg:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;--bg4:#242424;--border:#2a2a2a;--text:#f0f0f0;--text-dim:#777;--green:#22c55e;--red:#ef4444;--blue:#3b82f6;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:100;}
+.logo{font-size:20px;font-weight:800;text-decoration:none;color:var(--text);}
+.logo span{color:var(--gold);}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-link{color:var(--text-dim);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;transition:all 0.2s;}
+.nav-link:hover{color:var(--text);background:var(--bg3);}
+.nav-link.active{color:var(--gold);background:rgba(240,180,41,0.08);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;}
+.user-av{width:26px;height:26px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#000;}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+.main{max-width:1000px;margin:0 auto;padding:28px 32px;}
+.page-header{margin-bottom:28px;}
+.page-header h1{font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px;}
+.page-header p{font-size:14px;color:var(--text-dim);}
+
+/* WALLET CARD */
+.wallet-banner{background:linear-gradient(135deg,#1c1600,#0e0e0e);border:1px solid var(--gold-dim);border-radius:18px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+.wallet-banner::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(240,180,41,0.12),transparent 70%);}
+.wb-left .wb-label{font-size:10px;letter-spacing:2px;color:var(--gold-dim);font-weight:700;text-transform:uppercase;margin-bottom:8px;}
+.wb-left .wb-bal{font-size:40px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--gold);}
+.wb-left .wb-sub{font-size:12px;color:var(--text-dim);margin-top:6px;}
+.wb-stats{display:flex;gap:32px;}
+.wb-stat label{font-size:10px;color:var(--text-dim);display:block;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}
+.wb-stat span{font-size:16px;font-family:'JetBrains Mono',monospace;font-weight:600;}
+
+/* TABS */
+.tabs-wrap{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;}
+.tab-btn{flex:1;padding:12px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-dim);border-radius:9px;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.tab-btn.active{background:var(--bg3);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.5);}
+.tab-btn.deposit.active{color:var(--green);}
+.tab-btn.withdraw.active{color:var(--red);}
+
+/* PANELS */
+.panel{display:none;}
+.panel.active{display:block;}
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+.box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.box-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:20px;}
+
+/* METHODS */
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.method-card{background:var(--bg3);border:2px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s;text-align:center;}
+.method-card:hover{border-color:var(--gold-dim);}
+.method-card.selected{border-color:var(--gold);background:rgba(240,180,41,0.05);}
+.method-icon{font-size:24px;margin-bottom:6px;}
+.method-name{font-size:12px;font-weight:700;}
+.method-sub{font-size:10px;color:var(--text-dim);margin-top:2px;}
+
+.field{margin-bottom:16px;}
+.field label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-dim);display:block;margin-bottom:7px;text-transform:uppercase;}
+.field input,.field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'Syne',sans-serif;outline:none;transition:border-color 0.2s;}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.field select option{background:var(--bg3);}
+
+.preset-amts{display:flex;gap:8px;margin-bottom:16px;}
+.preset-btn{flex:1;padding:8px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text-dim);transition:all 0.2s;font-family:'Syne',sans-serif;}
+.preset-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+.submit-btn{width:100%;padding:14px;border-radius:10px;border:none;cursor:pointer;font-size:15px;font-weight:800;font-family:'Syne',sans-serif;transition:all 0.2s;margin-top:4px;letter-spacing:0.5px;}
+.submit-btn.green{background:var(--green);color:#000;}
+.submit-btn.red{background:var(--red);color:#fff;}
+.submit-btn:hover{opacity:0.9;transform:translateY(-1px);}
+
+.summary-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:16px;}
+.summary-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+.summary-row:last-child{margin-bottom:0;border-top:1px solid var(--border);padding-top:8px;margin-top:8px;font-weight:700;}
+.summary-row span:last-child{font-family:'JetBrains Mono',monospace;}
+
+.notice{background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:14px 16px;font-size:12px;color:var(--text-dim);line-height:1.7;margin-top:16px;}
+.notice b{color:var(--blue);}
+
+/* HISTORY */
+.tx-row{display:grid;grid-template-columns:40px 1fr 120px 100px 80px;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;align-items:center;}
+.tx-row:last-child{border-bottom:none;}
+.tx-row.header{font-size:10px;color:var(--text-dim);letter-spacing:1px;font-weight:700;padding-bottom:8px;}
+.tx-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.tx-icon.dep{background:rgba(34,197,94,0.12);}
+.tx-icon.wit{background:rgba(239,68,68,0.12);}
+.tx-status{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;display:inline-block;}
+.tx-status.completed{background:rgba(34,197,94,0.12);color:var(--green);}
+.tx-status.pending{background:rgba(240,180,41,0.12);color:var(--gold);}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 24px;font-size:13px;font-weight:600;z-index:999;transition:transform 0.3s;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{border-color:var(--green);color:var(--green);}
+.toast.error{border-color:var(--red);color:var(--red);}
+
+@media(max-width:768px){
+  nav{padding:14px 16px;}.nav-links{display:none;}
+  .main{padding:20px 16px;}
+  .panel-grid{grid-template-columns:1fr;}
+  .method-grid{grid-template-columns:1fr 1fr;}
+  .wb-stats{flex-wrap:wrap;gap:16px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Gold<span>Ex</span></a>
+  <div class="nav-links">
+    <a href="home.html" class="nav-link">Dashboard</a>
+    <a href="trade.html" class="nav-link">Trade</a>
+    <a href="wallet.html" class="nav-link active">Wallet</a>
+    <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+  </div>
+  <div class="nav-right">
+    <div class="user-pill"><div class="user-av" id="userAv">D</div><span id="userName">Trader</span></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <h1>Wallet</h1>
+    <p>Manage your demo funds — deposit and withdraw virtual money</p>
+  </div>
+
+  <!-- WALLET BANNER -->
+  <div class="wallet-banner">
+    <div class="wb-left">
+      <div class="wb-label">Demo Balance</div>
+      <div class="wb-bal" id="wBal">$10,000.00</div>
+      <div class="wb-sub">Virtual funds · No real money</div>
+    </div>
+    <div class="wb-stats">
+      <div class="wb-stat"><label>Total Deposited</label><span id="totalDep" style="color:var(--green)">$10,000.00</span></div>
+      <div class="wb-stat"><label>Total Withdrawn</label><span id="totalWit" style="color:var(--red)">$0.00</span></div>
+      <div class="wb-stat"><label>Transactions</label><span id="txCount">0</span></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <button class="tab-btn deposit active" id="depTab" onclick="showPanel('deposit')">⬇ Deposit</button>
+    <button class="tab-btn withdraw" id="witTab" onclick="showPanel('withdraw')">⬆ Withdraw</button>
+    <button class="tab-btn" id="hisTab" onclick="showPanel('history')">📋 History</button>
+  </div>
+
+  <!-- DEPOSIT PANEL -->
+  <div class="panel active" id="depositPanel">
+    <div class="panel-grid">
+      <div class="box">
+        <div class="box-title">Payment Method</div>
+        <div class="method-grid">
+          <div class="method-card selected" onclick="selectMethod(this,'M-Pesa')">
+            <div class="method-icon">📱</div>
+            <div class="method-name">M-Pesa</div>
+            <div class="method-sub">Instant</div>
+          </div>
+          <div class="method-card" onclick="selectMethod(this,'Bank Transfer')">
+            <div class="method-icon">🏦</div>
+            <div class="method-name">Bank Transfer</div>
+            <div class="method-sub">1-2 days</div>
+          </div>
+          <div class="method-card" onclick="selectMethod(this,'Visa/Mastercard')">
+            <div class="method-icon">💳</div>
+            <div class="method-name">Visa/Mastercard</div>
+            <div class="method-sub">Instant</div>
+          </div>
+          <div class="method-card" onclick="selectMethod(this,'Crypto')">
+            <div class="method-icon">₿</div>
+            <div class="method-name">Crypto (USDT)</div>
+            <div class="method-sub">~10 mins</div>
+          </div>
+        </div>
+        <div class="field"><label>Amount (USD)</label><input type="number" id="depAmount" placeholder="Enter amount" min="10" oninput="updateDepSummary()"></div>
+        <div class="preset-amts">
+          <button class="preset-btn" onclick="setAmt('dep',100)">$100</button>
+          <button class="preset-btn" onclick="setAmt('dep',500)">$500</button>
+          <button class="preset-btn" onclick="setAmt('dep',1000)">$1K</button>
+          <button class="preset-btn" onclick="setAmt('dep',5000)">$5K</button>
+        </div>
+        <div class="field"><label>Reference / Notes (optional)</label><input type="text" id="depRef" placeholder="e.g. Top-up Jan 2026"></div>
+        <button class="submit-btn green" onclick="doDeposit()">⬇ Confirm Deposit</button>
+        <div class="notice"><b>Demo Mode:</b> No real money is processed. This simulates how deposits work on a real platform.</div>
+      </div>
+      <div class="box">
+        <div class="box-title">Deposit Summary</div>
+        <div class="summary-box">
+          <div class="summary-row"><span>Amount</span><span id="ds-amount">$0.00</span></div>
+          <div class="summary-row"><span>Method</span><span id="ds-method">M-Pesa</span></div>
+          <div class="summary-row"><span>Fee</span><span style="color:var(--green)">$0.00 (Free)</span></div>
+          <div class="summary-row"><span>You receive</span><span id="ds-receive" style="color:var(--gold)">$0.00</span></div>
+        </div>
+        <div class="box-title" style="margin-top:24px;">Current Balance</div>
+        <div style="font-size:28px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--gold)" id="ds-bal">$10,000.00</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">After deposit: <span id="ds-after" style="color:var(--green)">$10,000.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WITHDRAW PANEL -->
+  <div class="panel" id="withdrawPanel">
+    <div class="panel-grid">
+      <div class="box">
+        <div class="box-title">Withdrawal Method</div>
+        <div class="method-grid">
+          <div class="method-card selected" onclick="selectWithdrawMethod(this,'M-Pesa')">
+            <div class="method-icon">📱</div>
+            <div class="method-name">M-Pesa</div>
+            <div class="method-sub">Instant</div>
+          </div>
+          <div class="method-card" onclick="selectWithdrawMethod(this,'Bank Transfer')">
+            <div class="method-icon">🏦</div>
+            <div class="method-name">Bank Transfer</div>
+            <div class="method-sub">1-2 days</div>
+          </div>
+          <div class="method-card" onclick="selectWithdrawMethod(this,'Crypto')">
+            <div class="method-icon">₿</div>
+            <div class="method-name">Crypto (USDT)</div>
+            <div class="method-sub">~10 mins</div>
+          </div>
+          <div class="method-card" onclick="selectWithdrawMethod(this,'Visa/Mastercard')">
+            <div class="method-icon">💳</div>
+            <div class="method-name">Visa/Mastercard</div>
+            <div class="method-sub">1-3 days</div>
+          </div>
+        </div>
+        <div class="field"><label>Amount (USD)</label><input type="number" id="witAmount" placeholder="Enter amount" min="10" oninput="updateWitSummary()"></div>
+        <div class="preset-amts">
+          <button class="preset-btn" onclick="setAmt('wit',100)">$100</button>
+          <button class="preset-btn" onclick="setAmt('wit',500)">$500</button>
+          <button class="preset-btn" onclick="setAmt('wit',1000)">$1K</button>
+          <button class="preset-btn" onclick="setAmt('wit',0,'all')">All</button>
+        </div>
+        <div class="field"><label>Destination (phone / account / address)</label><input type="text" id="witDest" placeholder="e.g. 07XX XXX XXX"></div>
+        <button class="submit-btn red" onclick="doWithdraw()">⬆ Confirm Withdrawal</button>
+        <div class="notice"><b>Demo Mode:</b> No real money is sent. This simulates how withdrawals work on a real platform.</div>
+      </div>
+      <div class="box">
+        <div class="box-title">Withdrawal Summary</div>
+        <div class="summary-box">
+          <div class="summary-row"><span>Amount</span><span id="ws-amount">$0.00</span></div>
+          <div class="summary-row"><span>Method</span><span id="ws-method">M-Pesa</span></div>
+          <div class="summary-row"><span>Processing Fee</span><span id="ws-fee">$0.00</span></div>
+          <div class="summary-row"><span>You receive</span><span id="ws-receive" style="color:var(--gold)">$0.00</span></div>
+        </div>
+        <div class="box-title" style="margin-top:24px;">Available Balance</div>
+        <div style="font-size:28px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--gold)" id="ws-bal">$10,000.00</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">After withdrawal: <span id="ws-after" style="color:var(--red)">$10,000.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY PANEL -->
+  <div class="panel" id="historyPanel">
+    <div class="box">
+      <div class="box-title">Transaction History</div>
+      <div id="txHistory"><div style="color:var(--text-dim);font-size:13px;text-align:center;padding:32px 0;">No transactions yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const userStr=localStorage.getItem('goldex_user');
+if(!userStr){window.location.href='login.html';}
+const user=JSON.parse(userStr);
+document.getElementById('userName').textContent=user.name.split(' ')[0];
+document.getElementById('userAv').textContent=user.name.charAt(0).toUpperCase();
+function logout(){localStorage.removeItem('goldex_user');window.location.href='login.html';}
+
+// State
+function getState(){return JSON.parse(localStorage.getItem('goldex_state')||JSON.stringify({balance:10000,positions:[],trades:[],transactions:[],totalDep:10000,totalWit:0}));}
+function saveState(s){localStorage.setItem('goldex_state',JSON.stringify(s));}
+
+let depMethod='M-Pesa', witMethod='M-Pesa';
+
+function selectMethod(el,m){depMethod=m;document.querySelectorAll('#depositPanel .method-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');document.getElementById('ds-method').textContent=m;updateDepSummary();}
+function selectWithdrawMethod(el,m){witMethod=m;document.querySelectorAll('#withdrawPanel .method-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');document.getElementById('ws-method').textContent=m;updateWitSummary();}
+
+function setAmt(type,v,all){
+  const s=getState();
+  if(type==='dep'){document.getElementById('depAmount').value=v;updateDepSummary();}
+  else{document.getElementById('witAmount').value=all?s.balance.toFixed(2):v;updateWitSummary();}
+}
+
+function fmt(n){return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+function updateDepSummary(){
+  const s=getState();
+  const a=parseFloat(document.getElementById('depAmount').value)||0;
+  document.getElementById('ds-amount').textContent='$'+fmt(a);
+  document.getElementById('ds-receive').textContent='$'+fmt(a);
+  document.getElementById('ds-bal').textContent='$'+fmt(s.balance);
+  document.getElementById('ds-after').textContent='$'+fmt(s.balance+a);
+}
+function updateWitSummary(){
+  const s=getState();
+  const a=parseFloat(document.getElementById('witAmount').value)||0;
+  const fee=witMethod==='Bank Transfer'?Math.max(5,a*0.01):0;
+  document.getElementById('ws-amount').textContent='$'+fmt(a);
+  document.getElementById('ws-fee').textContent=fee?'$'+fmt(fee)+' (1%)':'$0.00 (Free)';
+  document.getElementById('ws-receive').textContent='$'+fmt(Math.max(0,a-fee));
+  document.getElementById('ws-bal').textContent='$'+fmt(s.balance);
+  document.getElementById('ws-after').textContent='$'+fmt(Math.max(0,s.balance-a));
+}
+
+function loadWalletDisplay(){
+  const s=getState();
+  document.getElementById('wBal').textContent='$'+fmt(s.balance);
+  document.getElementById('totalDep').textContent='$'+fmt(s.totalDep||10000);
+  document.getElementById('totalWit').textContent='$'+fmt(s.totalWit||0);
+  document.getElementById('txCount').textContent=(s.transactions||[]).length;
+  document.getElementById('ds-bal').textContent='$'+fmt(s.balance);
+  document.getElementById('ws-bal').textContent='$'+fmt(s.balance);
+  document.getElementById('ws-after').textContent='$'+fmt(s.balance);
+  renderTxHistory(s.transactions||[]);
+}
+
+function doDeposit(){
+  const a=parseFloat(document.getElementById('depAmount').value);
+  if(!a||a<10){showToast('Minimum deposit is $10','error');return;}
+  const s=getState();
+  s.balance+=a;
+  s.totalDep=(s.totalDep||10000)+a;
+  s.transactions=s.transactions||[];
+  s.transactions.push({type:'deposit',method:depMethod,amount:a,fee:0,time:new Date().toLocaleString(),status:'completed'});
+  saveState(s);
+  showToast('✅ Deposited $'+fmt(a)+' via '+depMethod,'success');
+  document.getElementById('depAmount').value='';
+  loadWalletDisplay();
+}
+
+function doWithdraw(){
+  const a=parseFloat(document.getElementById('witAmount').value);
+  const dest=document.getElementById('witDest').value.trim();
+  if(!a||a<10){showToast('Minimum withdrawal is $10','error');return;}
+  const s=getState();
+  if(a>s.balance){showToast('Insufficient balance','error');return;}
+  if(!dest){showToast('Please enter a destination','error');return;}
+  const fee=witMethod==='Bank Transfer'?Math.max(5,a*0.01):0;
+  s.balance-=a;
+  s.totalWit=(s.totalWit||0)+a;
+  s.transactions=s.transactions||[];
+  s.transactions.push({type:'withdraw',method:witMethod,amount:a,fee,dest,time:new Date().toLocaleString(),status:'completed'});
+  saveState(s);
+  showToast('✅ Withdrew $'+fmt(a)+' via '+witMethod,'success');
+  document.getElementById('witAmount').value='';
+  document.getElementById('witDest').value='';
+  loadWalletDisplay();
+}
+
+function renderTxHistory(txs){
+  const el=document.getElementById('txHistory');
+  if(!txs.length){el.innerHTML='<div style="color:var(--text-dim);font-size:13px;text-align:center;padding:32px 0;">No transactions yet.</div>';return;}
+  el.innerHTML=`<div class="tx-row header"><span></span><span>DETAILS</span><span>AMOUNT</span><span>METHOD</span><span>STATUS</span></div>`+
+  [...txs].reverse().map(t=>`<div class="tx-row">
+    <div class="tx-icon ${t.type==='deposit'?'dep':'wit'}">${t.type==='deposit'?'⬇':'⬆'}</div>
+    <div><div style="font-weight:600;font-size:13px">${t.type==='deposit'?'Deposit':'Withdrawal'}</div><div style="font-size:11px;color:var(--text-dim)">${t.time}</div></div>
+    <div class="mono" style="color:${t.type==='deposit'?'var(--green)':'var(--red)'}">${t.type==='deposit'?'+':'-'}$${fmt(t.amount)}</div>
+    <div style="font-size:12px">${t.method}</div>
+    <span class="tx-status completed">${t.status}</span>
+  </div>`).join('');
+}
+
+function showPanel(p){
+  ['deposit','withdraw','history'].forEach(id=>{document.getElementById(id+'Panel').classList.remove('active');document.getElementById(id==='history'?'hisTab':id.slice(0,3)+'Tab').classList.remove('active');});
+  document.getElementById(p+'Panel').classList.add('active');
+  document.getElementById(p==='history'?'hisTab':p.slice(0,3)+'Tab').classList.add('active');
+}
+
+function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.className='toast',3000);}
+
+loadWalletDisplay();
+</script>
+</body>
+</html>

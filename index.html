@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoldEx — Trade Gold. Build Wealth.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#F0B429;--gold-dim:#8a6a00;--gold-light:#FFD97D;--bg:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;--bg4:#242424;--border:#2a2a2a;--text:#f0f0f0;--text-dim:#777;--green:#22c55e;--red:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);background:rgba(10,10,10,0.95);position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(10px);}
+.logo{font-size:22px;font-weight:800;text-decoration:none;color:var(--text);}
+.logo span{color:var(--gold);}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-link{color:var(--text-dim);text-decoration:none;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;transition:all 0.2s;}
+.nav-link:hover{color:var(--text);background:var(--bg3);}
+.nav-link.active{color:var(--text);}
+.nav-cta{background:var(--gold);color:#000;padding:9px 22px;border-radius:8px;font-size:14px;font-weight:800;text-decoration:none;transition:all 0.2s;}
+.nav-cta:hover{background:var(--gold-light);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(240,180,41,0.08),transparent 70%);pointer-events:none;}
+.hero-bg2{position:absolute;inset:0;background:radial-gradient(ellipse 40% 40% at 20% 80%,rgba(240,180,41,0.04),transparent 60%);pointer-events:none;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.3);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:28px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.hero h1{font-size:clamp(42px,7vw,88px);font-weight:800;line-height:1.0;letter-spacing:-2px;margin-bottom:24px;max-width:900px;}
+.hero h1 span{color:var(--gold);}
+.hero p{font-size:18px;color:var(--text-dim);max-width:560px;line-height:1.7;margin-bottom:40px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.btn-primary{background:var(--gold);color:#000;padding:14px 32px;border-radius:10px;font-size:15px;font-weight:800;text-decoration:none;transition:all 0.2s;letter-spacing:0.5px;}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-2px);}
+.btn-secondary{background:transparent;color:var(--text);padding:14px 32px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;border:1px solid var(--border);transition:all 0.2s;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+
+/* LIVE TICKER */
+.ticker-bar{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 40px;display:flex;align-items:center;gap:40px;overflow:hidden;}
+.ticker-item{display:flex;align-items:center;gap:12px;white-space:nowrap;}
+.ticker-sym{font-size:12px;font-weight:700;letter-spacing:2px;color:var(--text-dim);}
+.ticker-price{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;color:var(--gold);}
+.ticker-chg{font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 8px;border-radius:4px;}
+.ticker-chg.up{background:rgba(34,197,94,0.12);color:var(--green);}
+.ticker-chg.dn{background:rgba(239,68,68,0.12);color:var(--red);}
+.ticker-div{width:1px;height:30px;background:var(--border);}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);}
+.stat{background:var(--bg2);padding:40px;text-align:center;}
+.stat-val{font-size:40px;font-weight:800;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:8px;}
+.stat-label{font-size:13px;color:var(--text-dim);font-weight:600;letter-spacing:1px;}
+
+/* FEATURES */
+.section{padding:100px 40px;max-width:1100px;margin:0 auto;}
+.section-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+.section-title{font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-1px;margin-bottom:16px;line-height:1.1;}
+.section-sub{font-size:16px;color:var(--text-dim);max-width:500px;line-height:1.7;margin-bottom:60px;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all 0.3s;}
+.feature-card:hover{border-color:var(--gold-dim);transform:translateY(-4px);}
+.feature-icon{width:48px;height:48px;background:rgba(240,180,41,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:20px;}
+.feature-card h3{font-size:17px;font-weight:700;margin-bottom:10px;}
+.feature-card p{font-size:14px;color:var(--text-dim);line-height:1.7;}
+
+/* HOW IT WORKS */
+.how{background:var(--bg2);padding:100px 40px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.how-inner{max-width:1100px;margin:0 auto;}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:60px;position:relative;}
+.steps::before{content:'';position:absolute;top:24px;left:12.5%;right:12.5%;height:1px;background:var(--border);}
+.step{text-align:center;padding:0 20px;position:relative;}
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;margin:0 auto 20px;position:relative;z-index:1;color:var(--gold);}
+.step h4{font-size:15px;font-weight:700;margin-bottom:8px;}
+.step p{font-size:13px;color:var(--text-dim);line-height:1.6;}
+
+/* CTA */
+.cta-section{padding:100px 40px;text-align:center;position:relative;overflow:hidden;}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(240,180,41,0.07),transparent 70%);}
+.cta-section h2{font-size:clamp(32px,5vw,60px);font-weight:800;letter-spacing:-1.5px;margin-bottom:16px;}
+.cta-section p{font-size:17px;color:var(--text-dim);margin-bottom:40px;}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-logo{font-size:18px;font-weight:800;}.footer-logo span{color:var(--gold);}
+.footer-note{font-size:12px;color:var(--text-dim);}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:13px;color:var(--text-dim);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+
+@media(max-width:768px){
+  nav{padding:16px 20px;}
+  .nav-links .nav-link{display:none;}
+  .hero{padding:100px 20px 60px;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .features-grid{grid-template-columns:1fr;}
+  .steps{grid-template-columns:1fr 1fr;}
+  .steps::before{display:none;}
+  .section{padding:60px 20px;}
+  .ticker-bar{padding:14px 20px;gap:20px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Gold<span>Ex</span></a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active">Home</a>
+    <a href="trade.html" class="nav-link">Trade</a>
+    <a href="wallet.html" class="nav-link">Wallet</a>
+    <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+  </div>
+  <a href="login.html" class="nav-cta">Get Started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg2"></div>
+  <div class="hero-tag"><span class="live-dot"></span>LIVE DEMO PLATFORM</div>
+  <h1>Trade <span>Gold</span><br>Like a Pro</h1>
+  <p>Practice spot gold trading with real-time XAU/USD prices and $10,000 in demo funds. No risk. Real markets.</p>
+  <div class="hero-btns">
+    <a href="login.html" class="btn-primary">Start Trading Free</a>
+    <a href="trade.html" class="btn-secondary">View Live Prices →</a>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-item">
+    <span class="ticker-sym">XAU/USD</span>
+    <span class="ticker-price" id="t1">$3,325.40</span>
+    <span class="ticker-chg up" id="t1c">+0.42%</span>
+  </div>
+  <div class="ticker-div"></div>
+  <div class="ticker-item">
+    <span class="ticker-sym">XAG/USD</span>
+    <span class="ticker-price">$32.18</span>
+    <span class="ticker-chg up">+0.18%</span>
+  </div>
+  <div class="ticker-div"></div>
+  <div class="ticker-item">
+    <span class="ticker-sym">EUR/USD</span>
+    <span class="ticker-price">$1.0841</span>
+    <span class="ticker-chg dn">−0.05%</span>
+  </div>
+  <div class="ticker-div"></div>
+  <div class="ticker-item">
+    <span class="ticker-sym">BTC/USD</span>
+    <span class="ticker-price">$103,420</span>
+    <span class="ticker-chg up">+1.24%</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-val">$10K</div><div class="stat-label">DEMO BALANCE</div></div>
+  <div class="stat"><div class="stat-val">3s</div><div class="stat-label">PRICE REFRESH</div></div>
+  <div class="stat"><div class="stat-val">0%</div><div class="stat-label">COMMISSION</div></div>
+  <div class="stat"><div class="stat-val">24/7</div><div class="stat-label">MARKET ACCESS</div></div>
+</div>
+
+<!-- FEATURES -->
+<div style="background:var(--bg);">
+<div class="section">
+  <div class="section-tag">Why GoldEx</div>
+  <h2 class="section-title">Everything you need<br>to trade gold</h2>
+  <p class="section-sub">Built for beginners and experienced traders. No fake balances, no hidden tricks — just real prices, real mechanics.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Live Gold Prices</h3>
+      <p>Real-time XAU/USD feed updating every 3 seconds. See the market move as it happens.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Real P&L Tracking</h3>
+      <p>Every trade is tracked with live profit and loss. Know exactly how your positions are performing.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Demo Safe Zone</h3>
+      <p>Practice with $10,000 in virtual funds. Learn without risking a single real cent.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💼</div>
+      <h3>Portfolio Dashboard</h3>
+      <p>Track your balance, equity, open positions, and gold holdings all in one place.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏆</div>
+      <h3>Leaderboard</h3>
+      <p>Compete with other traders. See who grew their demo account the most this week.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💳</div>
+      <h3>Virtual Wallet</h3>
+      <p>Simulate deposits and withdrawals. Understand how real trading platforms manage funds.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how">
+  <div class="how-inner">
+    <div class="section-tag">How It Works</div>
+    <h2 class="section-title">Up and trading<br>in 4 steps</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Create Account</h4>
+        <p>Register in seconds. No ID required for demo.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Get $10K Demo</h4>
+        <p>Your account is instantly funded with virtual money.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Trade Gold</h4>
+        <p>Buy or sell XAU/USD at live market prices.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Track & Improve</h4>
+        <p>Review your trades, climb the leaderboard.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Ready to start<br><span style="color:var(--gold)">trading gold?</span></h2>
+  <p>Join thousands of demo traders on GoldEx. Free forever.</p>
+  <a href="login.html" class="btn-primary" style="display:inline-block;font-size:16px;padding:16px 40px;">Create Free Account →</a>
+</div>
+
+<footer>
+  <div class="footer-logo">Gold<span>Ex</span></div>
+  <div class="footer-note">⚠️ Demo platform only. No real money involved.</div>
+  <div class="footer-links">
+    <a href="trade.html">Trade</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="leaderboard.html">Leaderboard</a>
+    <a href="login.html">Login</a>
+  </div>
+</footer>
+
+<script>
+// Animate live ticker
+async function updateTicker(){
+  try{
+    const r=await fetch('https://metals.live/api/spot',{signal:AbortSignal.timeout(3000)});
+    const d=await r.json();
+    const g=d.find(x=>(x.symbol||'').toUpperCase()==='XAU'||(x.name||'').toLowerCase().includes('gold'));
+    if(g){
+      const p=parseFloat(g.price||g.bid||g.ask);
+      if(p>100){
+        document.getElementById('t1').textContent='$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+      }
+    }
+  }catch(e){}
+}
+updateTicker();
+setInterval(updateTicker,5000);
+</script>
+</body>
+</html>
