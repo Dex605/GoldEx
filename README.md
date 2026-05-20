@@ -1,0 +1,2 @@
+# GoldEx
+Gold trading.
