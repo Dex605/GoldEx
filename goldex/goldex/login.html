@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoldEx — Login / Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#F0B429;--gold-dim:#8a6a00;--gold-light:#FFD97D;--bg:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;--bg4:#242424;--border:#2a2a2a;--text:#f0f0f0;--text-dim:#777;--green:#22c55e;--red:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.logo{font-size:22px;font-weight:800;text-decoration:none;color:var(--text);}
+.logo span{color:var(--gold);}
+.back{color:var(--text-dim);text-decoration:none;font-size:14px;font-weight:600;transition:color 0.2s;}
+.back:hover{color:var(--gold);}
+
+.page{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;position:relative;overflow:hidden;}
+.page::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(240,180,41,0.05),transparent 70%);pointer-events:none;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:440px;position:relative;}
+.card-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.25);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:24px;}
+
+.tabs{display:flex;background:var(--bg3);border-radius:10px;padding:4px;margin-bottom:32px;}
+.tab{flex:1;padding:10px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text-dim);border-radius:8px;transition:all 0.2s;font-family:'Syne',sans-serif;}
+.tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.4);}
+
+.form-title{font-size:24px;font-weight:800;margin-bottom:6px;}
+.form-sub{font-size:14px;color:var(--text-dim);margin-bottom:28px;}
+
+.field{margin-bottom:18px;}
+.field label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-dim);display:block;margin-bottom:7px;text-transform:uppercase;}
+.field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'Syne',sans-serif;outline:none;transition:border-color 0.2s;}
+.field input:focus{border-color:var(--gold);}
+.field input::placeholder{color:var(--text-dim);}
+
+.submit-btn{width:100%;padding:14px;background:var(--gold);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;letter-spacing:0.5px;margin-top:8px;}
+.submit-btn:hover{background:var(--gold-light);transform:translateY(-1px);}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text-dim);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.demo-btn{width:100%;padding:12px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.demo-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+.notice{background:rgba(240,180,41,0.07);border:1px solid rgba(240,180,41,0.2);border-radius:10px;padding:14px 16px;font-size:12px;color:var(--text-dim);line-height:1.6;margin-top:20px;}
+.notice b{color:var(--gold);}
+
+.error-msg{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:var(--red);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none;}
+
+footer{padding:20px 40px;border-top:1px solid var(--border);background:var(--bg2);text-align:center;}
+.footer-note{font-size:12px;color:var(--text-dim);}
+.footer-note a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Gold<span>Ex</span></a>
+  <a href="index.html" class="back">← Back to Home</a>
+</nav>
+
+<div class="page">
+  <div class="card">
+    <div class="card-tag">🔐 SECURE ACCESS</div>
+
+    <div class="tabs">
+      <button class="tab active" id="loginTab" onclick="showTab('login')">Login</button>
+      <button class="tab" id="registerTab" onclick="showTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="form-title">Welcome back</div>
+      <div class="form-sub">Sign in to your GoldEx account</div>
+      <div class="error-msg" id="loginError">Invalid email or password.</div>
+      <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <button class="submit-btn" onclick="doLogin()">Sign In →</button>
+      <div class="divider">or</div>
+      <button class="demo-btn" onclick="demoLogin()">⚡ Continue as Demo User</button>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" style="display:none">
+      <div class="form-title">Create account</div>
+      <div class="form-sub">Start with $10,000 demo balance</div>
+      <div class="error-msg" id="registerError">Please fill all fields.</div>
+      <div class="field"><label>Full Name</label><input type="text" id="regName" placeholder="John Doe"></div>
+      <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="regPassword" placeholder="Min. 6 characters"></div>
+      <button class="submit-btn" onclick="doRegister()">Create Account →</button>
+      <div class="divider">or</div>
+      <button class="demo-btn" onclick="demoLogin()">⚡ Try Demo Without Registering</button>
+    </div>
+
+    <div class="notice"><b>Demo Platform:</b> GoldEx uses simulated funds only. No real money is deposited, withdrawn, or traded. All balances are virtual.</div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-note">⚠️ Demo only · No real funds involved · <a href="index.html">Back to GoldEx</a></div>
+</footer>
+
+<script>
+function showTab(t){
+  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
+  document.getElementById('registerForm').style.display=t==='register'?'block':'none';
+  document.getElementById('loginTab').className='tab'+(t==='login'?' active':'');
+  document.getElementById('registerTab').className='tab'+(t==='register'?' active':'');
+}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPassword').value;
+  const users=JSON.parse(localStorage.getItem('goldex_users')||'[]');
+  const user=users.find(u=>u.email===email&&u.password===pass);
+  if(!user){document.getElementById('loginError').style.display='block';return;}
+  document.getElementById('loginError').style.display='none';
+  localStorage.setItem('goldex_user',JSON.stringify(user));
+  window.location.href='home.html';
+}
+
+function doRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPassword').value;
+  const err=document.getElementById('registerError');
+  if(!name||!email||pass.length<6){err.textContent='Please fill all fields (password min 6 chars).';err.style.display='block';return;}
+  const users=JSON.parse(localStorage.getItem('goldex_users')||'[]');
+  if(users.find(u=>u.email===email)){err.textContent='Email already registered.';err.style.display='block';return;}
+  const newUser={name,email,password:pass,balance:10000,equity:10000,positions:[],trades:[],joined:new Date().toLocaleDateString()};
+  users.push(newUser);
+  localStorage.setItem('goldex_users',JSON.stringify(users));
+  localStorage.setItem('goldex_user',JSON.stringify(newUser));
+  window.location.href='home.html';
+}
+
+function demoLogin(){
+  const demo={name:'Demo Trader',email:'demo@goldex.com',balance:10000,equity:10000,positions:[],trades:[],joined:new Date().toLocaleDateString(),isDemo:true};
+  localStorage.setItem('goldex_user',JSON.stringify(demo));
+  window.location.href='home.html';
+}
+</script>
+</body>
+</html>

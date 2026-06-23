@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoldEx — Leaderboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#F0B429;--gold-dim:#8a6a00;--gold-light:#FFD97D;--bg:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;--bg4:#242424;--border:#2a2a2a;--text:#f0f0f0;--text-dim:#777;--green:#22c55e;--red:#ef4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);background:var(--bg2);position:sticky;top:0;z-index:100;}
+.logo{font-size:20px;font-weight:800;text-decoration:none;color:var(--text);}
+.logo span{color:var(--gold);}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-link{color:var(--text-dim);text-decoration:none;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;transition:all 0.2s;}
+.nav-link:hover{color:var(--text);background:var(--bg3);}
+.nav-link.active{color:var(--gold);background:rgba(240,180,41,0.08);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;}
+.user-av{width:26px;height:26px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#000;}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all 0.2s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+.main{max-width:900px;margin:0 auto;padding:28px 32px;}
+.page-header{text-align:center;margin-bottom:40px;}
+.page-header h1{font-size:36px;font-weight:800;letter-spacing:-1px;margin-bottom:8px;}
+.page-header h1 span{color:var(--gold);}
+.page-header p{font-size:15px;color:var(--text-dim);}
+
+/* PODIUM */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin-bottom:40px;padding:0 20px;}
+.podium-item{flex:1;max-width:200px;text-align:center;}
+.podium-av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin:0 auto 10px;border:3px solid transparent;}
+.podium-av.r1{background:linear-gradient(135deg,#F0B429,#8a6a00);color:#000;border-color:var(--gold);}
+.podium-av.r2{background:linear-gradient(135deg,#9ca3af,#4b5563);color:#000;border-color:#9ca3af;}
+.podium-av.r3{background:linear-gradient(135deg,#cd7f32,#7c3a1a);color:#fff;border-color:#cd7f32;}
+.podium-name{font-size:14px;font-weight:700;margin-bottom:4px;}
+.podium-score{font-size:13px;font-family:'JetBrains Mono',monospace;color:var(--green);}
+.podium-block{border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin-top:12px;}
+.podium-block.b1{height:80px;background:rgba(240,180,41,0.15);border:1px solid rgba(240,180,41,0.3);color:var(--gold);}
+.podium-block.b2{height:60px;background:rgba(156,163,175,0.12);border:1px solid rgba(156,163,175,0.3);color:#9ca3af;}
+.podium-block.b3{height:45px;background:rgba(205,127,50,0.12);border:1px solid rgba(205,127,50,0.3);color:#cd7f32;}
+
+/* TABLE */
+.box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.box-header{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.box-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;}
+
+.lb-row{display:grid;grid-template-columns:50px 1fr 120px 120px 100px;gap:12px;padding:14px 24px;border-bottom:1px solid var(--border);align-items:center;font-size:13px;transition:background 0.2s;}
+.lb-row:last-child{border-bottom:none;}
+.lb-row:hover{background:var(--bg3);}
+.lb-row.header{font-size:10px;color:var(--text-dim);letter-spacing:1px;font-weight:700;padding-top:12px;padding-bottom:12px;}
+.lb-row.me{background:rgba(240,180,41,0.05);border-left:3px solid var(--gold);}
+.rank{font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--text-dim);}
+.rank.gold{color:var(--gold);}
+.rank.silver{color:#9ca3af;}
+.rank.bronze{color:#cd7f32;}
+.trader-info{display:flex;align-items:center;gap:10px;}
+.trader-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;background:var(--bg3);border:1px solid var(--border);}
+.trader-name{font-weight:700;}
+.trader-sub{font-size:10px;color:var(--text-dim);margin-top:1px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.green{color:var(--green);}
+.red{color:var(--red);}
+.you-badge{background:rgba(240,180,41,0.15);border:1px solid rgba(240,180,41,0.3);color:var(--gold);font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:6px;letter-spacing:1px;}
+
+.empty-lb{text-align:center;padding:48px 24px;color:var(--text-dim);}
+.empty-lb a{color:var(--gold);text-decoration:none;font-weight:700;}
+
+@media(max-width:768px){
+  nav{padding:14px 16px;}.nav-links{display:none;}
+  .main{padding:20px 16px;}
+  .lb-row{grid-template-columns:40px 1fr 90px 80px;}
+  .lb-row .lb-trades{display:none;}
+  .podium{gap:6px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Gold<span>Ex</span></a>
+  <div class="nav-links">
+    <a href="home.html" class="nav-link">Dashboard</a>
+    <a href="trade.html" class="nav-link">Trade</a>
+    <a href="wallet.html" class="nav-link">Wallet</a>
+    <a href="leaderboard.html" class="nav-link active">Leaderboard</a>
+  </div>
+  <div class="nav-right">
+    <div class="user-pill"><div class="user-av" id="userAv">D</div><span id="userName">Trader</span></div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <h1>🏆 <span>Leaderboard</span></h1>
+    <p>Top demo traders ranked by portfolio growth</p>
+  </div>
+
+  <div id="podiumWrap"></div>
+
+  <div class="box">
+    <div class="box-header">
+      <div class="box-title">All Traders</div>
+      <div style="font-size:12px;color:var(--text-dim);" id="lastRefresh">Refreshing...</div>
+    </div>
+    <div id="lbTable"></div>
+  </div>
+</div>
+
+<script>
+const userStr=localStorage.getItem('goldex_user');
+if(!userStr){window.location.href='login.html';}
+const user=JSON.parse(userStr);
+document.getElementById('userName').textContent=user.name.split(' ')[0];
+document.getElementById('userAv').textContent=user.name.charAt(0).toUpperCase();
+function logout(){localStorage.removeItem('goldex_user');window.location.href='login.html';}
+
+// Demo traders to populate leaderboard
+const demoTraders=[
+  {name:'Alex Morgan',equity:14280,pnl:4280,trades:47,joined:'Jan 2026'},
+  {name:'Fatima K.',equity:13100,pnl:3100,trades:31,joined:'Jan 2026'},
+  {name:'Samuel O.',equity:12450,pnl:2450,trades:28,joined:'Feb 2026'},
+  {name:'Priya R.',equity:11980,pnl:1980,trades:19,joined:'Feb 2026'},
+  {name:'James Wu',equity:11200,pnl:1200,trades:15,joined:'Mar 2026'},
+  {name:'Amira N.',equity:10650,pnl:650,trades:9,joined:'Mar 2026'},
+  {name:'Tom B.',equity:9800,pnl:-200,trades:12,joined:'Apr 2026'},
+  {name:'Aisha M.',equity:9400,pnl:-600,trades:7,joined:'Apr 2026'},
+];
+
+function buildLeaderboard(){
+  const state=JSON.parse(localStorage.getItem('goldex_state')||'{}');
+  const price=parseFloat(localStorage.getItem('goldex_price')||3325);
+  const pnl=(state.positions||[]).reduce((s,p)=>s+(p.type==='buy'?(price-p.entry)*p.oz:(p.entry-price)*p.oz),0);
+  const equity=(state.balance||10000)+(state.positions||[]).reduce((s,p)=>s+p.amount,0)+pnl;
+  const me={name:user.name,equity:equity,pnl:equity-10000,trades:(state.trades||[]).length,joined:'2026',isMe:true};
+  const all=[...demoTraders,me].sort((a,b)=>b.equity-a.equity);
+
+  // Podium (top 3)
+  const top3=all.slice(0,3);
+  const order=[1,0,2]; // 2nd, 1st, 3rd visual order
+  if(top3.length>=3){
+    document.getElementById('podiumWrap').innerHTML=`<div class="podium">
+      ${order.map(i=>{
+        const t=top3[i],rank=i+1;
+        const cls=['r1','r2','r3'][i];const bcls=['b1','b2','b3'][i];
+        const emoji=['🥇','🥈','🥉'][i];
+        return `<div class="podium-item" style="${i===0?'order:2':''}${i===1?'order:1':''}${i===2?'order:3':''}">
+          <div class="podium-av ${cls}">${t.name.charAt(0)}</div>
+          <div class="podium-name">${t.name.split(' ')[0]}${t.isMe?'<span class="you-badge">YOU</span>':''}</div>
+          <div class="podium-score">+$${t.pnl>=0?t.pnl.toFixed(0):0}</div>
+          <div class="podium-block ${bcls}">${emoji}</div>
+        </div>`;}).join('')}
+    </div>`;
+  }
+
+  // Table
+  const ranks=['🥇','🥈','🥉'];
+  const rankCls=['gold','silver','bronze'];
+  document.getElementById('lbTable').innerHTML=
+    `<div class="lb-row header"><span>RANK</span><span>TRADER</span><span>EQUITY</span><span>P&L</span><span class="lb-trades">TRADES</span></div>`+
+    all.map((t,i)=>{
+      const isTop=i<3;
+      return `<div class="lb-row${t.isMe?' me':''}">
+        <span class="rank ${isTop?rankCls[i]:''}">${isTop?ranks[i]:'#'+(i+1)}</span>
+        <div class="trader-info">
+          <div class="trader-av">${t.name.charAt(0)}</div>
+          <div><div class="trader-name">${t.name}${t.isMe?'<span class="you-badge">YOU</span>':''}</div><div class="trader-sub">Joined ${t.joined}</div></div>
+        </div>
+        <span class="mono">$${t.equity.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+        <span class="mono ${t.pnl>=0?'green':'red'}">${t.pnl>=0?'+':''}$${t.pnl.toFixed(2)}</span>
+        <span class="mono lb-trades">${t.trades}</span>
+      </div>`;
+    }).join('');
+
+  document.getElementById('lastRefresh').textContent='Updated '+new Date().toLocaleTimeString();
+}
+
+buildLeaderboard();
+setInterval(buildLeaderboard,10000);
+</script>
+</body>
+</html>
