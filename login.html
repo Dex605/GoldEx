@@ -9,332 +9,72 @@
 <script src="config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ── THEMES ─────────────────────────────────────────── */
-[data-theme="dark"] {
-  --bg0: #0b0e11;
-  --bg1: #161a1e;
-  --bg2: #1e2329;
-  --bg3: #2b3139;
-  --border: #2b3139;
-  --border2: #3d4450;
-  --text: #eaecef;
-  --text2: #b7bdc6;
-  --text3: #848e9c;
-  --text4: #5a6272;
-  --yellow: #f0b90b;
-  --yellow2: #d4a017;
-  --yellow-glow: rgba(240,185,11,0.15);
-  --green: #0ecb81;
-  --red: #f6465d;
-  --card-shadow: 0 24px 48px rgba(0,0,0,0.4);
-  --input-bg: #1e2329;
-  --left-bg: linear-gradient(135deg, #0f1318 0%, #161a1e 50%, #0b0e11 100%);
-}
-[data-theme="light"] {
-  --bg0: #f5f5f5;
-  --bg1: #ffffff;
-  --bg2: #f8f9fa;
-  --bg3: #eaecef;
-  --border: #e0e3e7;
-  --border2: #c8ccd2;
-  --text: #1a1d21;
-  --text2: #3d4450;
-  --text3: #6b7280;
-  --text4: #9ca3af;
-  --yellow: #d4a017;
-  --yellow2: #b8860b;
-  --yellow-glow: rgba(212,160,23,0.12);
-  --green: #059669;
-  --red: #dc2626;
-  --card-shadow: 0 24px 48px rgba(0,0,0,0.08);
-  --input-bg: #ffffff;
-  --left-bg: linear-gradient(135deg, #fefce8 0%, #fffbeb 50%, #fef3c7 100%);
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background: var(--bg0);
-  color: var(--text);
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  transition: background 0.3s, color 0.3s;
-}
-
-/* ── NAV ────────────────────────────────────────────── */
-nav {
-  display: flex; align-items: center; justify-content: space-between;
-  height: 60px; padding: 0 28px;
-  background: var(--bg1);
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 100;
-  transition: background 0.3s, border-color 0.3s;
-}
-.logo {
-  font-size: 20px; font-weight: 700;
-  text-decoration: none; color: var(--text);
-  display: flex; align-items: center; gap: 2px;
-  letter-spacing: -0.5px;
-}
-.logo .g { color: var(--yellow); }
-.logo .ex { font-weight: 300; }
-.nav-right { display: flex; align-items: center; gap: 12px; }
-.back {
-  font-size: 13px; color: var(--text3);
-  text-decoration: none; transition: color 0.15s;
-  display: flex; align-items: center; gap: 4px;
-}
-.back:hover { color: var(--text); }
-
-/* Theme toggle */
-.theme-toggle {
-  width: 44px; height: 24px;
-  background: var(--bg3);
-  border-radius: 12px;
-  cursor: pointer;
-  position: relative;
-  border: 1px solid var(--border2);
-  transition: background 0.3s;
-  display: flex; align-items: center; padding: 2px;
-}
-.theme-toggle .knob {
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--yellow);
-  transition: transform 0.3s;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
-}
-[data-theme="light"] .theme-toggle .knob { transform: translateX(20px); }
-.theme-label { font-size: 11px; color: var(--text3); }
-
-/* ── LAYOUT ─────────────────────────────────────────── */
-.page {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: calc(100vh - 60px);
-}
-
-/* ── LEFT ───────────────────────────────────────────── */
-.left {
-  background: var(--left-bg);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  justify-content: center; padding: 60px 56px;
-  position: relative; overflow: hidden;
-  transition: all 0.3s;
-}
-.left::before {
-  content: '';
-  position: absolute; top: -100px; right: -100px;
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, var(--yellow-glow), transparent 70%);
-  pointer-events: none;
-}
-.left::after {
-  content: '';
-  position: absolute; bottom: -80px; left: -80px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, var(--yellow-glow), transparent 70%);
-  pointer-events: none;
-}
-.left-tag {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--yellow-glow);
-  border: 1px solid rgba(240,185,11,0.3);
-  padding: 5px 14px; border-radius: 20px;
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 1.5px; color: var(--yellow);
-  margin-bottom: 28px; text-transform: uppercase;
-  width: fit-content;
-}
-.live-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--green);
-  animation: blink 2s infinite;
-  display: inline-block;
-}
-@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-.left h1 {
-  font-size: 34px; font-weight: 700;
-  line-height: 1.25; letter-spacing: -1px;
-  margin-bottom: 14px; color: var(--text);
-}
-.left h1 span { color: var(--yellow); }
-.left > p {
-  font-size: 14px; color: var(--text3);
-  line-height: 1.75; margin-bottom: 36px;
-  max-width: 380px;
-}
-.perks { display: flex; flex-direction: column; gap: 13px; margin-bottom: 40px; }
-.perk { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text2); }
-.perk-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--yellow); flex-shrink: 0;
-}
-
-/* Live price card */
-.price-card {
-  background: var(--bg1);
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 18px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  box-shadow: var(--card-shadow);
-  transition: all 0.3s;
-}
-.pc-left .pc-label { font-size: 11px; color: var(--text3); margin-bottom: 5px; letter-spacing: 0.5px; }
-.pc-price {
-  font-size: 24px; font-weight: 700;
-  font-family: 'IBM Plex Mono', monospace;
-  color: var(--green); letter-spacing: -0.5px;
-}
-.pc-chg { font-size: 12px; font-family: 'IBM Plex Mono', monospace; margin-top: 3px; }
-.pc-chg.up { color: var(--green); }
-.pc-chg.dn { color: var(--red); }
-.pc-right { text-align: right; }
-.pc-right .pc-label { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
-.pc-stat { font-size: 13px; font-family: 'IBM Plex Mono', monospace; color: var(--text2); margin-bottom: 3px; }
-
-/* ── RIGHT ──────────────────────────────────────────── */
-.right {
-  background: var(--bg0);
-  display: flex; align-items: center; justify-content: center;
-  padding: 48px 40px;
-  transition: background 0.3s;
-}
-.card {
-  width: 100%; max-width: 420px;
-  background: var(--bg1);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 36px;
-  box-shadow: var(--card-shadow);
-  transition: all 0.3s;
-}
-
-/* Tabs */
-.tabs {
-  display: flex; background: var(--bg2);
-  border-radius: 6px; padding: 3px;
-  margin-bottom: 28px;
-  border: 1px solid var(--border);
-}
-.tab {
-  flex: 1; padding: 9px;
-  text-align: center; font-size: 13px; font-weight: 500;
-  cursor: pointer; border: none; background: transparent;
-  color: var(--text3); border-radius: 4px;
-  transition: all 0.2s; font-family: 'IBM Plex Sans', sans-serif;
-}
-.tab.active {
-  background: var(--bg1);
-  color: var(--text); font-weight: 600;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.15);
-}
-
-.form-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.3px; }
-.form-sub { font-size: 12px; color: var(--text3); margin-bottom: 22px; }
-
-/* Fields */
-.field { margin-bottom: 15px; }
-.field label {
-  display: block; font-size: 11px; font-weight: 600;
-  color: var(--text3); margin-bottom: 6px;
-  letter-spacing: 0.5px; text-transform: uppercase;
-}
-.input-wrap {
-  position: relative;
-  display: flex; align-items: center;
-}
-.input-wrap .icon {
-  position: absolute; left: 12px;
-  font-size: 14px; pointer-events: none;
-  color: var(--text3);
-}
-.field input {
-  width: 100%;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 11px 12px 11px 36px;
-  color: var(--text); font-size: 13px;
-  font-family: 'IBM Plex Sans', sans-serif;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
-}
-.field input:focus {
-  border-color: var(--yellow);
-  box-shadow: 0 0 0 3px var(--yellow-glow);
-}
-.field input::placeholder { color: var(--text4); }
-
-/* Submit */
-.submit-btn {
-  width: 100%; padding: 12px;
-  background: var(--yellow); color: #000;
-  border: none; border-radius: 6px;
-  font-size: 14px; font-weight: 700;
-  cursor: pointer; font-family: 'IBM Plex Sans', sans-serif;
-  transition: all 0.2s; margin-top: 6px;
-  letter-spacing: 0.3px;
-}
-.submit-btn:hover { background: var(--yellow2); transform: translateY(-1px); box-shadow: 0 4px 12px var(--yellow-glow); }
-.submit-btn:active { transform: translateY(0); }
-.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-.err {
-  background: rgba(246,70,93,0.08);
-  border: 1px solid rgba(246,70,93,0.3);
-  color: var(--red); padding: 10px 12px;
-  border-radius: 6px; font-size: 12px;
-  margin-bottom: 14px; display: none;
-}
-
-.switch-text {
-  font-size: 12px; color: var(--text3);
-  text-align: center; margin-top: 16px; line-height: 1.6;
-}
-.switch-text a { color: var(--yellow); text-decoration: none; font-weight: 500; }
-.switch-text a:hover { text-decoration: underline; }
-
-/* Divider */
-.or-divider {
-  display: flex; align-items: center; gap: 10px;
-  margin: 16px 0; font-size: 11px; color: var(--text4);
-}
-.or-divider::before,.or-divider::after { content:''; flex:1; height:1px; background:var(--border); }
-
-/* Bottom badges */
-.trust-badges {
-  display: flex; justify-content: center; gap: 20px;
-  margin-top: 20px; padding-top: 20px;
-  border-top: 1px solid var(--border);
-}
-.trust-badge {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 11px; color: var(--text3);
-}
-
-/* Footer */
-footer {
-  padding: 16px 28px;
-  border-top: 1px solid var(--border);
-  background: var(--bg1);
-  display: flex; align-items: center; justify-content: space-between;
-  font-size: 11px; color: var(--text3);
-  transition: background 0.3s, border-color 0.3s;
-}
-footer a { color: var(--yellow); text-decoration: none; }
-
-@media(max-width:768px) {
-  .page { grid-template-columns: 1fr; }
-  .left { display: none; }
-  .right { padding: 24px 16px; }
-  .card { padding: 24px 20px; }
-}
+[data-theme="dark"]{--bg0:#0b0e11;--bg1:#161a1e;--bg2:#1e2329;--bg3:#2b3139;--border:#2b3139;--border2:#3d4450;--text:#eaecef;--text2:#b7bdc6;--text3:#848e9c;--text4:#5a6272;--yellow:#f0b90b;--yellow2:#d4a017;--yellow-glow:rgba(240,185,11,0.15);--green:#0ecb81;--red:#f6465d;--card-shadow:0 24px 48px rgba(0,0,0,0.4);--input-bg:#1e2329;--left-bg:linear-gradient(135deg,#0f1318 0%,#161a1e 50%,#0b0e11 100%);}
+[data-theme="light"]{--bg0:#f5f5f5;--bg1:#ffffff;--bg2:#f8f9fa;--bg3:#eaecef;--border:#e0e3e7;--border2:#c8ccd2;--text:#1a1d21;--text2:#3d4450;--text3:#6b7280;--text4:#9ca3af;--yellow:#d4a017;--yellow2:#b8860b;--yellow-glow:rgba(212,160,23,0.12);--green:#059669;--red:#dc2626;--card-shadow:0 24px 48px rgba(0,0,0,0.08);--input-bg:#ffffff;--left-bg:linear-gradient(135deg,#fefce8 0%,#fffbeb 50%,#fef3c7 100%);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg0);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px;min-height:100vh;display:flex;flex-direction:column;transition:background 0.3s,color 0.3s;}
+nav{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 28px;background:var(--bg1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;transition:background 0.3s,border-color 0.3s;}
+.logo{font-size:20px;font-weight:700;text-decoration:none;color:var(--text);letter-spacing:-0.5px;}
+.logo .g{color:var(--yellow);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.back{font-size:13px;color:var(--text3);text-decoration:none;transition:color 0.15s;}
+.back:hover{color:var(--text);}
+.theme-toggle{width:44px;height:24px;background:var(--bg3);border-radius:12px;cursor:pointer;position:relative;border:1px solid var(--border2);transition:background 0.3s;display:flex;align-items:center;padding:2px;}
+.theme-toggle .knob{width:18px;height:18px;border-radius:50%;background:var(--yellow);transition:transform 0.3s;display:flex;align-items:center;justify-content:center;font-size:10px;}
+[data-theme="light"] .theme-toggle .knob{transform:translateX(20px);}
+.theme-label{font-size:11px;color:var(--text3);}
+.page{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 60px);}
+.left{background:var(--left-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;padding:60px 56px;position:relative;overflow:hidden;transition:all 0.3s;}
+.left::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,var(--yellow-glow),transparent 70%);pointer-events:none;}
+.left-tag{display:inline-flex;align-items:center;gap:7px;background:var(--yellow-glow);border:1px solid rgba(240,185,11,0.3);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--yellow);margin-bottom:28px;text-transform:uppercase;width:fit-content;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite;display:inline-block;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+.left h1{font-size:34px;font-weight:700;line-height:1.25;letter-spacing:-1px;margin-bottom:14px;color:var(--text);}
+.left h1 span{color:var(--yellow);}
+.left>p{font-size:14px;color:var(--text3);line-height:1.75;margin-bottom:36px;max-width:380px;}
+.perks{display:flex;flex-direction:column;gap:13px;margin-bottom:40px;}
+.perk{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--text2);}
+.perk-dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);flex-shrink:0;}
+.price-card{background:var(--bg1);border:1px solid var(--border);border-radius:10px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--card-shadow);transition:all 0.3s;}
+.pc-label{font-size:11px;color:var(--text3);margin-bottom:5px;letter-spacing:0.5px;}
+.pc-price{font-size:24px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--green);letter-spacing:-0.5px;}
+.pc-chg{font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:3px;}
+.pc-chg.up{color:var(--green);}
+.pc-chg.dn{color:var(--red);}
+.pc-stat{font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--text2);margin-bottom:3px;}
+.right{background:var(--bg0);display:flex;align-items:center;justify-content:center;padding:48px 40px;transition:background 0.3s;}
+.card{width:100%;max-width:420px;background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:36px;box-shadow:var(--card-shadow);transition:all 0.3s;}
+.tabs{display:flex;background:var(--bg2);border-radius:6px;padding:3px;margin-bottom:28px;border:1px solid var(--border);}
+.tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text3);border-radius:4px;transition:all 0.2s;font-family:'IBM Plex Sans',sans-serif;}
+.tab.active{background:var(--bg1);color:var(--text);font-weight:600;box-shadow:0 1px 6px rgba(0,0,0,0.15);}
+.form-title{font-size:20px;font-weight:700;margin-bottom:4px;letter-spacing:-0.3px;}
+.form-sub{font-size:12px;color:var(--text3);margin-bottom:22px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase;}
+.input-wrap{position:relative;display:flex;align-items:center;}
+.input-wrap .icon{position:absolute;left:12px;font-size:14px;pointer-events:none;color:var(--text3);}
+.input-wrap .eye{position:absolute;right:12px;font-size:14px;cursor:pointer;color:var(--text3);transition:color 0.15s;user-select:none;}
+.input-wrap .eye:hover{color:var(--text);}
+.field input{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:11px 40px 11px 36px;color:var(--text);font-size:13px;font-family:'IBM Plex Sans',sans-serif;outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.3s;}
+.field input:focus{border-color:var(--yellow);box-shadow:0 0 0 3px var(--yellow-glow);}
+.field input::placeholder{color:var(--text4);}
+.strength-bar{height:3px;border-radius:2px;background:var(--bg3);margin-top:6px;overflow:hidden;}
+.strength-fill{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s;width:0%;}
+.strength-text{font-size:10px;color:var(--text3);margin-top:3px;}
+.match-text{font-size:11px;margin-top:4px;}
+.match-text.ok{color:var(--green);}
+.match-text.no{color:var(--red);}
+.submit-btn{width:100%;padding:12px;background:var(--yellow);color:#000;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;transition:all 0.2s;margin-top:6px;letter-spacing:0.3px;}
+.submit-btn:hover{background:var(--yellow2);transform:translateY(-1px);box-shadow:0 4px 12px var(--yellow-glow);}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.err{background:rgba(246,70,93,0.08);border:1px solid rgba(246,70,93,0.3);color:var(--red);padding:10px 12px;border-radius:6px;font-size:12px;margin-bottom:14px;display:none;}
+.switch-text{font-size:12px;color:var(--text3);text-align:center;margin-top:16px;line-height:1.6;}
+.switch-text a{color:var(--yellow);text-decoration:none;font-weight:500;}
+.trust-badges{display:flex;justify-content:center;gap:20px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);}
+.trust-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3);}
+footer{padding:16px 28px;border-top:1px solid var(--border);background:var(--bg1);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text3);transition:background 0.3s,border-color 0.3s;}
+footer a{color:var(--yellow);text-decoration:none;}
+@media(max-width:768px){.page{grid-template-columns:1fr;}.left{display:none;}.right{padding:24px 16px;}.card{padding:24px 20px;}}
 </style>
 </head>
 <body>
@@ -343,7 +83,7 @@ footer a { color: var(--yellow); text-decoration: none; }
   <a href="index.html" class="logo">Gold<span class="g">Ex</span></a>
   <div class="nav-right">
     <span class="theme-label" id="themeLabel">Dark</span>
-    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+    <div class="theme-toggle" onclick="toggleTheme()">
       <div class="knob" id="themeKnob">🌙</div>
     </div>
     <a href="index.html" class="back">← Home</a>
@@ -351,7 +91,6 @@ footer a { color: var(--yellow); text-decoration: none; }
 </nav>
 
 <div class="page">
-  <!-- LEFT -->
   <div class="left">
     <div class="left-tag"><span class="live-dot"></span>Professional Trading</div>
     <h1>Trade <span>Spot Gold</span><br>Like a Pro</h1>
@@ -365,12 +104,12 @@ footer a { color: var(--yellow); text-decoration: none; }
       <div class="perk"><div class="perk-dot"></div>Competitive leaderboard</div>
     </div>
     <div class="price-card">
-      <div class="pc-left">
+      <div>
         <div class="pc-label">XAU / USD · SPOT</div>
         <div class="pc-price" id="livePrice">Loading...</div>
         <div class="pc-chg up" id="liveChg">—</div>
       </div>
-      <div class="pc-right">
+      <div style="text-align:right">
         <div class="pc-label">24h Range</div>
         <div class="pc-stat" id="pcHigh">High: —</div>
         <div class="pc-stat" id="pcLow">Low: —</div>
@@ -378,7 +117,6 @@ footer a { color: var(--yellow); text-decoration: none; }
     </div>
   </div>
 
-  <!-- RIGHT -->
   <div class="right">
     <div class="card">
       <div class="tabs">
@@ -403,6 +141,7 @@ footer a { color: var(--yellow); text-decoration: none; }
           <div class="input-wrap">
             <span class="icon">🔒</span>
             <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+            <span class="eye" onclick="toggleEye('loginPassword',this)">👁</span>
           </div>
         </div>
         <button class="submit-btn" id="loginBtn" onclick="doLogin()">Log In →</button>
@@ -444,8 +183,20 @@ footer a { color: var(--yellow); text-decoration: none; }
           <label>Password</label>
           <div class="input-wrap">
             <span class="icon">🔒</span>
-            <input type="password" id="regPassword" placeholder="Min. 6 characters">
+            <input type="password" id="regPassword" placeholder="Min. 6 characters" oninput="checkStrength();checkMatch()">
+            <span class="eye" onclick="toggleEye('regPassword',this)">👁</span>
           </div>
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-text" id="strengthText"></div>
+        </div>
+        <div class="field">
+          <label>Confirm Password</label>
+          <div class="input-wrap">
+            <span class="icon">🔒</span>
+            <input type="password" id="regConfirm" placeholder="Repeat your password" oninput="checkMatch()">
+            <span class="eye" onclick="toggleEye('regConfirm',this)">👁</span>
+          </div>
+          <div class="match-text" id="matchText"></div>
         </div>
         <button class="submit-btn" id="registerBtn" onclick="doRegister()">Create Account →</button>
         <div class="switch-text">Already have an account? <a href="#" onclick="showTab('login')">Log in</a></div>
@@ -467,91 +218,113 @@ footer a { color: var(--yellow); text-decoration: none; }
 <script>
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ── THEME ────────────────────────────────────────────
+// Theme
 const savedTheme = localStorage.getItem('goldex_theme') || 'dark';
 document.documentElement.setAttribute('data-theme', savedTheme);
 updateThemeUI(savedTheme);
+function toggleTheme(){const c=document.documentElement.getAttribute('data-theme'),n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('goldex_theme',n);updateThemeUI(n);}
+function updateThemeUI(t){document.getElementById('themeKnob').textContent=t==='dark'?'🌙':'☀️';document.getElementById('themeLabel').textContent=t==='dark'?'Dark':'Light';}
 
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('goldex_theme', next);
-  updateThemeUI(next);
-}
-function updateThemeUI(theme) {
-  document.getElementById('themeKnob').textContent = theme === 'dark' ? '🌙' : '☀️';
-  document.getElementById('themeLabel').textContent = theme === 'dark' ? 'Dark' : 'Light';
-}
+// Redirect if logged in
+sb.auth.getSession().then(({data})=>{if(data.session)window.location.href='home.html';});
 
-// ── AUTH ─────────────────────────────────────────────
-sb.auth.getSession().then(({ data }) => {
-  if (data.session) window.location.href = 'home.html';
-});
-
-function showTab(t) {
-  document.getElementById('loginForm').style.display = t==='login'?'block':'none';
-  document.getElementById('registerForm').style.display = t==='register'?'block':'none';
-  document.getElementById('loginTab').className = 'tab'+(t==='login'?' active':'');
-  document.getElementById('registerTab').className = 'tab'+(t==='register'?' active':'');
+// Tab switch
+function showTab(t){
+  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
+  document.getElementById('registerForm').style.display=t==='register'?'block':'none';
+  document.getElementById('loginTab').className='tab'+(t==='login'?' active':'');
+  document.getElementById('registerTab').className='tab'+(t==='register'?' active':'');
 }
 
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const err = document.getElementById('loginErr');
-  const btn = document.getElementById('loginBtn');
-  if (!email||!password) { err.textContent='Please fill all fields.'; err.style.display='block'; return; }
-  btn.disabled=true; btn.textContent='Signing in...';
-  const { error } = await sb.auth.signInWithPassword({ email, password });
-  if (error) { err.textContent='Invalid email or password.'; err.style.display='block'; btn.disabled=false; btn.textContent='Log In →'; return; }
-  window.location.href = 'home.html';
+// Show/hide password
+function toggleEye(id,el){
+  const inp=document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';el.textContent='🙈';}
+  else{inp.type='password';el.textContent='👁';}
 }
 
-async function doRegister() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const phone = document.getElementById('regPhone').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const err = document.getElementById('registerErr');
-  const btn = document.getElementById('registerBtn');
-  if (!name||!email||password.length<6) { err.textContent='Fill all fields. Password min 6 characters.'; err.style.display='block'; return; }
-  btn.disabled=true; btn.textContent='Creating account...';
-  const { data, error } = await sb.auth.signUp({ email, password, options: { data: { name, phone } } });
-  if (error) { err.textContent=error.message; err.style.display='block'; btn.disabled=false; btn.textContent='Create Account →'; return; }
-  await sb.from('profiles').upsert({ id: data.user.id, name, phone, balance: 0 });
-  window.location.href = 'home.html';
+// Password strength
+function checkStrength(){
+  const p=document.getElementById('regPassword').value;
+  const fill=document.getElementById('strengthFill');
+  const text=document.getElementById('strengthText');
+  let score=0;
+  if(p.length>=6)score++;
+  if(p.length>=10)score++;
+  if(/[A-Z]/.test(p))score++;
+  if(/[0-9]/.test(p))score++;
+  if(/[^A-Za-z0-9]/.test(p))score++;
+  const levels=[{w:'0%',c:'transparent',t:''},{w:'20%',c:'#f6465d',t:'Very weak'},{w:'40%',c:'#f6465d',t:'Weak'},{w:'60%',c:'#f0b90b',t:'Fair'},{w:'80%',c:'#0ecb81',t:'Strong'},{w:'100%',c:'#0ecb81',t:'Very strong'}];
+  const l=levels[score]||levels[0];
+  fill.style.width=l.w; fill.style.background=l.c; text.textContent=l.t;
+  text.style.color=l.c;
 }
 
-// ── LIVE PRICE ───────────────────────────────────────
-let bp=0, dHigh=0, dLow=Infinity;
-async function tick() {
-  try {
-    const r = await fetch('https://metals.live/api/spot', { signal: AbortSignal.timeout(4000) });
-    const d = await r.json();
-    const g = d.find(x => (x.symbol||'').toUpperCase()==='XAU');
-    if (g) {
-      const p = parseFloat(g.price||g.bid||g.ask);
-      if (p > 100) {
-        if (!bp) bp = p;
-        if (p > dHigh) dHigh = p;
-        if (dLow === Infinity || p < dLow) dLow = p;
-        const chg = ((p - bp) / bp * 100).toFixed(2);
-        const fmt = n => n.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
-        document.getElementById('livePrice').textContent = '$' + fmt(p);
-        document.getElementById('liveChg').textContent = (chg>=0?'+':'')+chg+'%';
-        document.getElementById('liveChg').className = 'pc-chg '+(chg>=0?'up':'dn');
-        document.getElementById('pcHigh').textContent = 'High: $' + fmt(dHigh);
-        document.getElementById('pcLow').textContent = 'Low: $' + (dLow===Infinity?'—':fmt(dLow));
-        return;
-      }
-    }
-  } catch(e) {}
-  if (!bp) bp = 3320 + Math.random()*40;
-  bp += (Math.random()-0.499)*1.5;
-  document.getElementById('livePrice').textContent = '$' + bp.toFixed(2);
+// Password match
+function checkMatch(){
+  const p=document.getElementById('regPassword').value;
+  const c=document.getElementById('regConfirm').value;
+  const el=document.getElementById('matchText');
+  if(!c){el.textContent='';return;}
+  if(p===c){el.textContent='✓ Passwords match';el.className='match-text ok';}
+  else{el.textContent='✗ Passwords do not match';el.className='match-text no';}
 }
-tick(); setInterval(tick, 5000);
+
+// Login
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const password=document.getElementById('loginPassword').value;
+  const err=document.getElementById('loginErr');
+  const btn=document.getElementById('loginBtn');
+  if(!email||!password){err.textContent='Please fill all fields.';err.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Signing in...';
+  const {error}=await sb.auth.signInWithPassword({email,password});
+  if(error){err.textContent='Invalid email or password.';err.style.display='block';btn.disabled=false;btn.textContent='Log In →';return;}
+  window.location.href='home.html';
+}
+
+// Register
+async function doRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  const password=document.getElementById('regPassword').value;
+  const confirm=document.getElementById('regConfirm').value;
+  const err=document.getElementById('registerErr');
+  const btn=document.getElementById('registerBtn');
+  if(!name||!email||password.length<6){err.textContent='Fill all fields. Password min 6 characters.';err.style.display='block';return;}
+  if(password!==confirm){err.textContent='Passwords do not match.';err.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Creating account...';
+  const {data,error}=await sb.auth.signUp({email,password,options:{data:{name,phone}}});
+  if(error){err.textContent=error.message;err.style.display='block';btn.disabled=false;btn.textContent='Create Account →';return;}
+  await sb.from('profiles').upsert({id:data.user.id,name,phone,balance:0});
+  window.location.href='home.html';
+}
+
+// Live price
+let bp=0,dHigh=0,dLow=Infinity;
+async function tick(){
+  try{
+    const r=await fetch('https://metals.live/api/spot',{signal:AbortSignal.timeout(4000)});
+    const d=await r.json();
+    const g=d.find(x=>(x.symbol||'').toUpperCase()==='XAU');
+    if(g){const p=parseFloat(g.price||g.bid||g.ask);if(p>100){
+      if(!bp)bp=p;if(p>dHigh)dHigh=p;if(dLow===Infinity||p<dLow)dLow=p;
+      const chg=((p-bp)/bp*100).toFixed(2);
+      const fmt=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+      document.getElementById('livePrice').textContent='$'+fmt(p);
+      document.getElementById('liveChg').textContent=(chg>=0?'+':'')+chg+'%';
+      document.getElementById('liveChg').className='pc-chg '+(chg>=0?'up':'dn');
+      document.getElementById('pcHigh').textContent='High: $'+fmt(dHigh);
+      document.getElementById('pcLow').textContent='Low: $'+(dLow===Infinity?'—':fmt(dLow));
+      return;
+    }}
+  }catch(e){}
+  if(!bp)bp=3320+Math.random()*40;
+  bp+=(Math.random()-0.499)*1.5;
+  document.getElementById('livePrice').textContent='$'+bp.toFixed(2);
+}
+tick();setInterval(tick,5000);
 </script>
 </body>
 </html>
